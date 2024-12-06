@@ -1,0 +1,150 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{here}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+
+% Set page size and margins
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% % Remove section numbering
+% \renewcommand{\thesection}{}
+% \renewcommand{\thesubsection}{}
+
+% \newcommand{\code}[1]{{\tt #1}}
+% \newcommand\blankpage{%
+% 	\null
+% 	\thispagestyle{empty}%
+% 	\addtocounter{page}{-1}%
+% 	\newpage}
+
+
+%%%% Define style for code %%%%
+\lstdefinestyle{mystyle}{
+    language=Java,
+	numbers=left,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{brown},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single, % Aggiunge il bordo
+    frameround=tttt, % Angoli arrotondati
+    backgroundcolor=\color{lightgray!20}, % Sfondo leggermente grigio
+    rulecolor=\color{black}, % Colore del bordo
+}
+\lstset{style=mystyle} % stile definito come default
+\captionsetup[lstlisting]{labelformat=empty} % Disable listing numbering
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\codepath}{../app/src/main/java/com/example/stepappv4}
+
+
+\title{
+	\normalfont\normalsize
+	\textsc{Mobile and Wearable Computing SA 2024-2025\\%
+	Universit\`a della Svizzera italiana}\\
+	\vspace{25pt}
+	\rule{\linewidth}{0.5pt}\\
+	\vspace{20pt}
+	{\huge Assignment 4}\\
+	\vspace{12pt}
+	\rule{\linewidth}{1pt}\\
+	\vspace{12pt}
+}
+
+\author{
+  Paolo Deidda \\
+  \text{paolo.deidda@usi.ch} \\ 
+  \url{https://github.com/USI-Projects-Collection/mobile_ass_04.git}
+}
+
+
+\begin{document}
+\maketitle
+
+\vspace{2cm}
+
+\section*{Note}
+The assignment is at the end of the tutorial file (Paolo\_Deidda\_Assignment04.ipynb)
+
+\section*{Exercise 0}
+
+\subsection*{Results}
+The balanced accuracy for 5-fold and Leave-One-User-Out (LOUO) cross-validation was computed for both the old dataset (\texttt{example\_data\_w\_engagement.csv}) and the new dataset (\texttt{assignment\_data.csv}). Below are the results:
+
+\subsubsection*{5-Fold Cross-Validation}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Model} & \textbf{Old Dataset (\%)} & \textbf{New Dataset (\%)} & \textbf{Change} \\
+        \hline
+        XGBoost         & $68.75 \pm 0.78$         & $63.40 \pm 0.67$          & Decreased       \\
+        DummyClassifier & $47.58 \pm 0.31$         & $50.49 \pm 0.24$          & Increased       \\
+        \hline
+    \end{tabular}
+    \caption{5-Fold Cross-Validation Results}
+\end{table}
+
+\subsubsection*{Leave-One-User-Out (LOUO) Cross-Validation}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Model} & \textbf{Old Dataset (\%)} & \textbf{New Dataset (\%)} & \textbf{Change} \\
+        \hline
+        XGBoost         & $45.27 \pm 23.23$        & $41.92 \pm 16.32$         & Decreased       \\
+        DummyClassifier & $49.47 \pm 1.02$         & $49.83 \pm 1.21$          & No Change       \\
+        \hline
+    \end{tabular}
+    \caption{Leave-One-User-Out Cross-Validation Results}
+\end{table}
+
+\subsection*{Discussion}
+\textbf{Did the results change?} \\
+Yes, the results for both 5-fold and LOUO cross-validation changed when using the new dataset.
+
+\textbf{Why did the results change?} \\
+The observed changes can be attributed to differences in dataset characteristics:
+\begin{itemize}
+    \item \textbf{Feature distribution:} The new dataset likely has a different distribution of features, which impacts the model's ability to generalize.
+    \item \textbf{User variability:} Leave-One-User-Out validation is more sensitive to changes in user-level data. This is reflected in the decreased performance of XGBoost for LOUO.
+    \item \textbf{Class balance:} The slight increase in DummyClassifier's balanced accuracy suggests that the class distribution in the new dataset might be closer to uniform.
+\end{itemize}
+
+\section*{Exercise 1}
+
+The balanced accuracy scores for the Leave One Day Out (per user) paradigm are as follows:
+\begin{itemize}
+    \item \textbf{XGBoost:} $63.95 \pm 2.17\%$
+    \item \textbf{DummyClassifier:} $49.63 \pm 1.76\%$
+\end{itemize}
+
+Compared to other paradigms, the results here are more favorable. Specifically, the standard deviation is significantly lower than with the LOUO paradigm, indicating a tighter clustering of values around the mean with less fluctuation.
+
+\section*{Exercise 2}
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Model}               & \textbf{5-Fold}             & \textbf{LOUO}               & \textbf{LODO}               \\ \hline
+\textbf{Support Vector Machine (SVC)} & $50.22 \pm 0.32\%$  & $47.03 \pm 36.52\%$ & $50.17 \pm 0.38\%$  \\ \hline
+\textbf{Random Forest}       & $63.94 \pm 0.66\%$  & $42.00 \pm 16.24\%$ & $64.34 \pm 1.79\%$  \\ \hline
+\textbf{Naive Bayes (GaussianNB)} & $54.95 \pm 0.50\%$  & $28.44 \pm 22.48\%$ & $54.79 \pm 2.25\%$  \\ \hline
+\end{tabular}
+\caption{Performance of various classifiers across different validation paradigms.}
+\label{tab:exercise2}
+\end{table}
+
+Among the tested models, the Random Forest Classifier outperformed XGBoost. For the Naive Bayes classifier, a normal data distribution was assumed during its application. The performance results for each model across different paradigms are summarized below:
+
+
+\end{document}
